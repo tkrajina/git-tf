@@ -90,6 +90,7 @@ class push(Command):
             if verbose:
                 print('Checking in...')
             comment = git('log -1 --format=%s%n%b').strip().replace('"', '\\"')
+            comment = comment.replace('$', '\\$')
             workitems = git('notes --ref=%s show %s' % (wi.noteNamespace, hash), errorValue='')
             if workitems:
                 workitems = '"-associate:%s"' % workitems
@@ -105,7 +106,7 @@ class push(Command):
                 print('Changeset number:', changeSetNumber)
         except:
             if not dryRun:
-                repairer = repair()
+                repairer = repair.repair()
                 repairer.checkoutBranch = 'tfs'
                 repairer._run()
             raise
